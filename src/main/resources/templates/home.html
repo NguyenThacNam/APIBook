@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+    <h1> Danh sách</h1>
+    <table border="1" id="bookTable">
+        <thead>
+            <tr>
+                <th>ID</th><th>Tiêu đề</th><th>Nội dung</th><th>Ảnh</th><th>PDF</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <br/>
+    <a href="/add-book"> Thêm mới</a>
+
+    <script>
+        
+        fetch("/api/book")
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.querySelector("#bookTable tbody");
+                data.forEach(book => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.content}</td>
+                        <td><img src="/uploads/${book.thumbnail}" width="100"/></td>
+                        <td><a href="/uploads/${book.pdfFile}" target="_blank">PDF</a></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+    </script>
+</body>
+</html>

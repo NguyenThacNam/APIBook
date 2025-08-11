@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thêm  mới</title>
+</head>
+<body>
+    <h2>Thêm mới</h2>
+    <form id="bookForm">
+        Tiêu đề: <input type="text" name="title"/><br/>
+        Nội dung: <textarea name="content"></textarea><br/>
+        Ảnh đại diện: <input type="file" name="thumbnail"/><br/>
+        PDF: <input type="file" name="pdfFile"/><br/>
+        <button type="submit">Thêm</button>
+    </form>
+    <br/>
+    <a href="/"> Về trang chủ</a>
+
+    <script>
+        document.getElementById("bookForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData();
+
+            const book = {
+                title: form.title.value,
+                content: form.content.value
+            };
+            formData.append("book", new Blob([JSON.stringify(book)], {type: "application/json"}));
+            formData.append("thumbnail", form.thumbnail.files[0]);
+            formData.append("pdfFile", form.pdfFile.files[0]);
+
+            fetch("/api/book", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Thêm sách thành công!");
+                    window.location.href = "/";
+                } else {
+                    alert("Lỗi khi thêm sách.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
