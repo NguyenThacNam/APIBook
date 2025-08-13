@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.nm.dto.PageContentDto;
 import com.nm.dto.PdfContentDto;
 import com.nm.entity.Book;
+import com.nm.repository.BookRepository;
 import com.nm.service.BookService;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -20,6 +21,9 @@ public class BookApi {
 
     @Autowired
     private BookService bookService;
+    
+    @Autowired
+    private BookRepository bookRepository;
 
     @GetMapping
     public List<Book> getAllBooks() {
@@ -83,6 +87,12 @@ public class BookApi {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
+    @GetMapping("/search")
+    public List<Book> searchBooks(@RequestParam String keyword) {
+        return bookRepository.findByTitleContainingIgnoreCase(keyword);
+    }
+
 
 
 

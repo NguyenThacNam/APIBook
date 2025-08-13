@@ -1,74 +1,40 @@
 package com.nm.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
 public class User {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 
+	@Column(nullable = false, unique = true)
+	private String email;
+
+	@Column(nullable = false)
 	private String name;
 
-	@Column(unique = true, nullable = false)
-	private String email;
+	private String phone;
+
+	private String address;
 
 	@Column(nullable = false)
 	private String password;
 
-	@Enumerated(EnumType.STRING)
-	private Role role = Role.USER;
-
-	private Boolean isActive = true;
-
-	private LocalDateTime createdAt = LocalDateTime.now();
-
-	private LocalDateTime updatedAt = LocalDateTime.now();
-
-	@PreUpdate
-	public void setUpdatedAt() {
-		this.updatedAt = LocalDateTime.now();
-	}
-
-	public enum Role {
-		ADMIN, USER
-	}
+	@Column(nullable = false)
+	private String role = "USER";
 
 	public User() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
-	public User(Integer id, String name, String email, String password, Role role, Boolean isActive,
-			LocalDateTime createdAt, LocalDateTime updatedAt) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-		this.isActive = isActive;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
-
-	public Integer getId() {
+	// getters and setters
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getEmail() {
@@ -79,6 +45,30 @@ public class User {
 		this.email = email;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -87,36 +77,11 @@ public class User {
 		this.password = password;
 	}
 
-	public Role getRole() {
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
 }
