@@ -88,6 +88,7 @@ public class BookService {
         return bookRepo.findById(id).map(book -> {
             book.setTitle(newBookData.getTitle());
             book.setContent(newBookData.getContent());
+            book.setPdfPassword(newBookData.getPdfPassword()); 
             book.setUpdatedAt(LocalDateTime.now());
 
             try {

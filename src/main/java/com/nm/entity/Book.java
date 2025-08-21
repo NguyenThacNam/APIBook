@@ -24,7 +24,10 @@ public class Book {
 
     @Column(name = "pdf_file", length = 500)
     private String pdfFile;
-
+    
+    @Column(name = "pdf_password", length = 255)
+    private String pdfPassword;
+    
     @ManyToOne
     @JoinColumn(name = "course_id")
     @JsonIgnoreProperties({"books"})
@@ -40,12 +43,13 @@ public class Book {
     public Book() {}
 
     // Constructor khởi tạo nhanh
-    public Book(String title, String content, String thumbnail, String pdfFile, Course course) {
+    public Book(String title, String content, String thumbnail, String pdfFile, Course course  ,String pdfPassword) {
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;
         this.pdfFile = pdfFile;
         this.course = course;
+        this.pdfPassword = pdfPassword;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -115,6 +119,12 @@ public class Book {
     }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    public String getPdfPassword() {
+        return pdfPassword;
+    }
+    public void setPdfPassword(String pdfPassword) {
+        this.pdfPassword = pdfPassword;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +29,13 @@ public class CategoryApi {
 	 @Autowired
 	 private CategoryService categoryService;
 	 
+	 @PreAuthorize("hasRole('ADMIN')")
 	 @GetMapping
-	 
 	 public List<Category> getAllCategory(){
 		 return categoryService.getAllCategory();
 	 }
 	 
+	 @PreAuthorize("hasRole('ADMIN')")
 	 @GetMapping("/{id}")
 	    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
 	        return categoryService.getByIdCategory(id)
@@ -41,6 +43,7 @@ public class CategoryApi {
 	            .orElse(ResponseEntity.notFound().build());
 	    }
 	 
+	 @PreAuthorize("hasRole('ADMIN')")
 	 @PostMapping
 	    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
 	        try {
@@ -51,6 +54,7 @@ public class CategoryApi {
 	        }
 	    }
 	 
+	 @PreAuthorize("hasRole('ADMIN')")
 	 @PutMapping("/{id}")
 	 public ResponseEntity<Category> updateCategory(@PathVariable Long id , @RequestBody Category category){
 		 try {
@@ -61,6 +65,7 @@ public class CategoryApi {
 			 return ResponseEntity.badRequest().body(null);
 	        }
 	 }
+	 @PreAuthorize("hasRole('ADMIN')")
 	 @DeleteMapping("/{id}")
 	 public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
 	     boolean deleted = categoryService.deleteCategory(id);

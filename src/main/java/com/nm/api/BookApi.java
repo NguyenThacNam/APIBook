@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,14 +30,14 @@ public class BookApi {
     public List<Book> getAllBooks() {
         return bookService.getAllBook();
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookService.getBookById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Book> addBook(
             @RequestPart("book") Book book,
@@ -52,7 +53,7 @@ public class BookApi {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Book> updateBook(
             @PathVariable Long id,
@@ -70,23 +71,35 @@ public class BookApi {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         boolean deleted = bookService.deleteBook(id);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
     @GetMapping("/{id}/pdf-image-pages")
-    public ResponseEntity<?> getPdfPagesAsImages(@PathVariable Long id) {
+    public ResponseEntity<?> getPdfPagesAsImages(
+            @PathVariable Long id,
+            @RequestParam String password) {
         try {
+            Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sách"));
+
+            // 🔹 Kiểm tra mật khẩu
+            if (book.getPdfPassword() == null || !book.getPdfPassword().equals(password)) {
+                return ResponseEntity.status(403).body("Sai mật khẩu");
+            }
+
             List<PageContentDto> pages = bookService.extractPdfPagesAsImages(id);
             return ResponseEntity.ok(pages);
+
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Lỗi khi đọc file PDF");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     
     @GetMapping("/search")
     public List<Book> searchBooks(@RequestParam String keyword) {
